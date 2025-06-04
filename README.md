@@ -18,3 +18,7 @@ Practical Results
     Further optimization decreased simulation time. But implementing the CUDA library with Arrayfire made the largest impact.
     Running the calculation on the GPU reduced the same simulation time to 30 min, an improvement of 16x from C++ and 48x from MATLAB.
     This increased efficiency allowed us to calculate much larger simulation sizes, thus approaching a result with practical implications.
+
+![Alt text](image-url)
+
+[Watch a short video of the wave function propagation]([https://www.youtube.com/watch?v=VIDEO_ID](https://youtu.be/0afxQRICnuQ)]
