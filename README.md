@@ -6,7 +6,7 @@ It propagates a wave function inside of a cylindrical geometry under the influen
 Under inense electromagnetic field, a phenomenon called High Harmonic Generation (HHG) takes place which generates odd (2n+1) harmonics of the source photon frequency.
 Different boundary conditions and distances were tested to investigate the effects of limiting the space for HHG to take place.
 
-Physical Results
+Physical Results    
     We indeed observed reflections from the boundaries and as a result we observed increased HHG and higher maximum photon energy.
     We observed a similar effect when implementing absorbing boundary conditions. The absorbing boundary behaved like a very distant boundary, dampening reflection of the wave function and therefore dampening HHG.
     This result is significant because if it is possible to restrict the radial distance that the wave function can travel and reflect it, then HHG can be amplified including, at the highest energy harmonics.
