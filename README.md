@@ -22,4 +22,4 @@ Practical Results
 ![Alt text](image-url)
 ![my images](TDSE/Fig 1 - 800nm_laserpulse.pdf)
 
-[Watch a short video of the wave function propagation]([https://www.youtube.com/watch?v=VIDEO_ID](https://youtu.be/0afxQRICnuQ)]
+[![Watch a short video of the wave function propagation](https://img.youtube.com/vi/0afxQRICnuQ/0.jpg)](https://youtu.be/0afxQRICnuQ)
