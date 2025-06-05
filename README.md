@@ -19,7 +19,14 @@ Practical Results
     Running the calculation on the GPU reduced the same simulation time to 30 min, an improvement of 16x from C++ and 48x from MATLAB.
     This increased efficiency allowed us to calculate much larger simulation sizes, thus approaching a result with practical implications.
 
+![Laser Pulse Electric Field](https://github.com/ahwinney/TDSE/blob/7fcfed77cdc2b4913573d051521c428d34f8a034/Fig%201%20-%20800nm_laserpulse.pdf)
+
 ![Alt text](image-url)
-![my images](TDSE/Fig 1 - 800nm_laserpulse.pdf)
+
+![Alt text](image-url)
+
+![Alt text](image-url)
+
+![Alt text](image-url)
 
 [![Watch a short video of the wave function propagation](https://img.youtube.com/vi/0afxQRICnuQ/0.jpg)](https://youtu.be/0afxQRICnuQ)
