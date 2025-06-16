@@ -12,7 +12,7 @@ Physical Results
     This result is significant because if it is possible to restrict the radial distance that the wave function can travel and reflect it, then HHG can be amplified including, at the highest energy harmonics.
     Increased efficiency of HHG means the posibiltiy for higher energy attosecond pulse generation and improved efficiency for electron dynamics studies.
 
-Practical Results  
+Computational Results  
     Originally the code was written in MATLAB which can handle some linear algebra effiently, but for the scale of calculation we wanted, it was ineffective.
     After translating the code to C++, we saw a small simulation grid improve its calculation speed by 3x. This was originally a 24 hour simulation, and after translating it took about 8 hours.
     Further optimization decreased simulation time. But implementing the CUDA library with Arrayfire made the largest impact.
