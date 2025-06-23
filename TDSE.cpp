@@ -1,19 +1,18 @@
+#include <arrayfire.h>
 #include <iostream>
 #include <fstream>
-//#include < string>
+#include <stdio.h>
 #include <sstream>
 #include <time.h>
-#include <stdio.h>
-#include <arrayfire.h>
 #define PI 3.141592653589793
 
-using namespace af;
-using namespace std;
-
-//numerical solution of 3D TDSE following Chelkowski et.al(PRA. 46, R5342)
+//Numerical Solution of 3D TDSE following Chelkowski et.al(PRA. 46, R5342)
 //Coulomb potential Vc(rou,z)=-sqrt(rou^2+(z-R/2)^2)-sqrt(rou^2+(z+R/2)^2)
 //for H2+ in cylindrical coordinate system.
 //Intgrnd=@(x) (sqrt(2)/L/besselj(1,xn(n))*besselj(0,xn(n)*x/L).*(sqrt(2)*exp(-sqrt(x.^2+z(m)^2)))).*x;
+
+using namespace af;
+using namespace std;
 
 int main() {
 
@@ -29,22 +28,14 @@ beginning:
 	int NumZ1 = NumZ - 1;
 	int Zmin = -lgp / 2; //Z + grid size
 	int Zmax = -Zmin; //Z - grid size
-	//double L=8.0;
 	double L;
 	double radius = 2.0;
-	// std::cout << "Input radius: " ;
-	// cin >> radius;
 	std::cout << "Input Transverse Grid Size (max radial value)(au): ";
 	int LL;
 	cin >> LL;
 	L = LL + 0.0;
-	//cin >> L;
-	//int gp=64*L;
-	//std::cout << "Grid points per a.u. (transverse): ";
 	int rgp = 8;
-	//cin >> rgp;
 	int gp = LL * rgp;
-	//int gp=2048*(LL/8.0);
 	double dgp = gp + 0.0;
 
 	//Zeros of Bessel functions
@@ -114,13 +105,9 @@ beginning:
 
 	//time
 	double dT = 0.01;
-	//std::cout << "Timestep: ";
-	//cin >> dT;
 	double tau = 2 * PI / w;
 	const double TimeMax = tau * lp;
 	const int Tint = ceil(tau * lp / dT); //==TimeMax/dT;
-	//double Ttime=floor(tau/dT);
-	//double Halfway=floor(Tint/2.0);
 	double Ttime = Tint - 4;
 	double Halfway = 0;
 	std::cout << "Simulation time = " << TimeMax << " a.u." << endl;
@@ -131,11 +118,7 @@ beginning:
 	for (int n = 0; n != NumZ; n++) {
 		z1[n] = n * dZ + dZmin;
 	}
-	//array z;
-	//try{
 	af::array z = af::constant(0, NumZ, f64);
-	//}catch(af::exception& e){printf("%s\n",e.what());}
-	//z=array(NumZ,z1);
 	double dR = L / (dgp - 1);
 	double* rou1;
 	double* rou2;
@@ -158,28 +141,14 @@ beginning:
 	//Create output filename
 	string fn, fnp, fnhg, dpn, pL, iS, wlen, srou0, sz0;
 	stringstream slp, sI, Wavl, srou, sz;
-	// std::cout << "Output Filename: " ;
-	// cin >> fn;
-	srou << rou0 / 8;
-	sz << z0 / 8;
-	slp << lp;
-	Wavl << wavelen;
-	sI << intense;
-	srou0 = srou.str();
-	sz0 = sz.str();
-	pL = slp.str();
-	wlen = Wavl.str();
-	iS = sI.str();
+	srou << rou0 / 8; sz << z0 / 8; slp << lp;
+	Wavl << wavelen; sI << intense;
+	srou0 = srou.str(); sz0 = sz.str(); pL = slp.str(); wlen = Wavl.str(); iS = sI.str();
 	fn = "h_"; fn += wlen; fn += "nm_"; fn += gs; fn += "au_"; fn += lgth; fn += "au_"; fn += iS; fn += "I_"; fn += pL; fn += "t_"; fn += b; fn += "bz_z2p_"; fn += sz0; fn += "au"; fn += "_r_"; fn += srou0; fn += "au";
-	fnp = fn;
-	fnhg = fn;
-	dpn = fn;
+	fnp = fn; fnhg = fn; dpn = fn;
 	fn += ".txt"; fnp += "_wf.txt"; fnhg += "_mom.txt"; dpn += "_dp.txt";
 	const char* fn1, * fnp1, * hspec, * dpm;
-	fn1 = fn.c_str();
-	fnp1 = fnp.c_str();
-	hspec = fnhg.c_str();
-	dpm = dpn.c_str();
+	fn1 = fn.c_str(); fnp1 = fnp.c_str(); hspec = fnhg.c_str(); dpm = dpn.c_str();
 
 	//track calculation time
 	clock_t start = clock();
@@ -215,7 +184,6 @@ beginning:
 
 	//Set Initial Wave Functions
 	af::array psi = af::constant(0, gp, NumZ, c64);
-	//array psi0=zeros(gp,NumZ,c64);
 	af::array psi2 = af::constant(0, bz, gp, c64);
 	double* psi2d;
 	psi2d = new double[bz * gp];
@@ -243,10 +211,7 @@ beginning:
 	af::array psi_initial = af::constant(0, bz, NumZ, c64);
 	psi1f = af::complex(af::array(bz, NumZ, psid));
 	psi_initial = af::complex(af::array(bz, NumZ, psid));
-	delete[] psi2d;
-	delete[] psid;
-	delete[] rou1;
-	delete[] z1;
+	delete[] psi2d; delete[] psid; delete[] rou1; delete[] z1;
 
 	double Norm = 0;
 	double pint = 0;
@@ -300,12 +265,10 @@ beginning:
 	dmat.close();
 	af::array cd = af::constant(0, bz, bz, NumZ, c64);
 	cd = af::complex(af::array(bz, bz, NumZ, dm));
-	//std::cout << sum<double>(real(cd(bz/2,bz/2,NumZ/2))) << ' ' << dm[bz/2+bz*bz/2+bz*bz*NumZ/2] << endl;
 	delete[] dm;
 
 	creal = new double[bz * NumZ];
 	cim = new double[bz * NumZ];
-	//double dump;
 	for (int n = 0; n != NumZ; n++) {
 		for (int m = 0; m != bz; m++) {
 			vmat >> creal[m + n * bz] >> cim[m + n * bz];
@@ -317,7 +280,6 @@ beginning:
 
 	af::array cv0 = af::constant(0, bz, NumZ, c64);
 	cv0 = af::complex(af::array(bz, NumZ, creal), af::array(bz, NumZ, cim));
-	//std::cout << sum<double>(real(cv0(bz/2,NumZ/2))) << ' ' << sum<double>(imag(cv0(bz/2,NumZ/2))) << ' ' << creal[bz/2+bz*NumZ/2] << ' ' << cim[bz/2+bz*NumZ/2] << endl;
 	delete[] creal;
 	delete[] cim;
 
@@ -355,9 +317,7 @@ beginning:
 
 	//propagation loop.
 	psiT = psi1f.T();
-	//psi0=psi2.T()*psi1f;
 	af::array field = af::constant(0, 1, f64);
-	//ofstream mout("mom.txt");
 
 	//ofstream wf(fnp1);
 	start = clock();
@@ -419,7 +379,6 @@ beginning:
 				dblm2(span) = psi(rou0 + 1, seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1)) - psi(rou0, seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1));
 				Jrou1(span) = matmul(psi(rou0, seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1)).T(), af::conjg(dblm2(span)));
 				Jrou2(span) = matmul(af::conjg(psi(rou0, seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1))).T(), dblm2(span)) * rou0 / 8 / sqrt(z(seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1)) * z(seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1)) + rou0 * rou0 / 64);
-				//}
 				gfor(af::array i, rou0) {
 					dblm(i) = psi(i, NumZ / 2 - z0 - 1) - psi(i, NumZ / 2 - z0);
 					Jz1(i) = matmul(psi(i, NumZ / 2 - z0), af::conjg(dblm(i)));
@@ -460,9 +419,7 @@ beginning:
 
 		if (time >= 4 && time <= Tint) {
 			dp(time - 4) = d(0);
-
 			dp0(time - 4) = d0(0);
-
 			dA(time - 4) = sum(dsum(span));
 			dA(time - 4) = dA(time - 4) - field(0);
 		}
