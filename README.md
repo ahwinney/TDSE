@@ -1,3 +1,16 @@
+
+
+## 🔌 Dependencies
+
+You’ll need:
+
+- [ArrayFire](https://arrayfire.com/) (Install via package manager or from source)
+- CMake ≥ 3.10
+- A C++17 compiler
+- CUDA (if using GPU acceleration)
+- `json.hpp` (included in `/include/json/`)
+
+
 # TDSE
 TDSE
 
