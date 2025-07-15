@@ -14,9 +14,9 @@
 using namespace af;
 using namespace std;
 
-int main() {
+int main()
+{
 
-	//af::info(); af::array myarray;
 
 beginning:
 	af::array imaginarynumber = af::array(0, 1);
@@ -115,7 +115,8 @@ beginning:
 
 	double* z1;  //z coordinate
 	z1 = new double[NumZ];
-	for (int n = 0; n != NumZ; n++) {
+	for (int n = 0; n != NumZ; n++)
+	{
 		z1[n] = n * dZ + dZmin;
 	}
 	af::array z = af::constant(0, NumZ, f64);
@@ -124,8 +125,10 @@ beginning:
 	double* rou2;
 	rou1 = new double[gp];
 	rou2 = new double[gp * NumZ];
-
-	for (int n = 0; n != gp; n++) {//radial coordinate
+	
+	//radial coordinate
+	for (int n = 0; n != gp; n++)
+	{
 		rou1[n] = n * dR;
 		for (int m = 0; m != NumZ; m++) {
 			rou2[n + gp * m] = rou1[n] * pow(sqrt(rou1[n] * rou1[n] + z1[m] * z1[m]), -3);
@@ -157,11 +160,14 @@ beginning:
 	double* Mask1;
 	Mask1 = new double[NumZ];
 	af::array Mask = af::constant(0, NumZ, 1, f64);
-	for (int n = 0; n != NumZ; n++) {
-		if (abs(z1[n]) > (Zmax - 5.0)) {
+	for (int n = 0; n != NumZ; n++)
+	{
+		if (abs(z1[n]) > (Zmax - 5.0))
+		{
 			Mask1[n] = pow((sin((Zmax - abs(z1[n])) / 5.0 * PI / 2.0)), (0.125));
 		}
-		else {
+		else
+		{
 			Mask1[n] = 1.0;
 		}
 	}
@@ -171,11 +177,14 @@ beginning:
 	double* rMask1;
 	rMask1 = new double[gp];
 	af::array rMask = af::constant(0, gp, 1, f64);
-	for (int n = 0; n != gp; n++) {
-		if (rou1[n] > (L - 5.0)) {
+	for (int n = 0; n != gp; n++)
+	{
+		if (rou1[n] > (L - 5.0))
+		{
 			rMask1[n] = pow((sin((L - rou1[n]) / 5.0 * PI / 2.0)), (0.125));
 		}
-		else {
+		else
+		{
 			rMask1[n] = 1.0;
 		}
 	}
@@ -188,8 +197,10 @@ beginning:
 	double* psi2d;
 	psi2d = new double[bz * gp];
 
-	for (int m = 0; m != bz; m++) {
-		for (int n = 0; n != gp; n++) {
+	for (int m = 0; m != bz; m++)
+	{
+		for (int n = 0; n != gp; n++)
+		{
 			psi2d[m + n * bz] = sqrt(2.0) / L / _j1(xn[m]) * _j0(xn[m] * rou1[n] / L);//bessel basis fn's
 		}
 	}
@@ -199,9 +210,11 @@ beginning:
 	double* psid;
 	psid = new double[bz * NumZ];
 	for (int i = 0; i != bz; i++) {
-		for (int j = 0; j != NumZ; j++) {
+		for (int j = 0; j != NumZ; j++)
+		{
 			psid[i + j * bz] = 0;
-			for (int k = 0; k != gp; k++) {
+			for (int k = 0; k != gp; k++)
+			{
 				psid[i + j * bz] += psi2d[i + k * bz] * pow(PI, -0.5) * exp(-sqrt(z1[j] * z1[j] + rou1[k] * rou1[k])) * rou1[k] * dR;
 			}
 		}
@@ -218,7 +231,8 @@ beginning:
 	af::array Norm1 = af::constant(0, NumZ, c64);
 	af::array Norm2 = af::constant(0, NumZ, c64);
 
-	gfor(seq m, NumZ) {
+	gfor(seq m, NumZ)
+	{
 		af::array cero = matmul(psi1f(span, m), af::conjg(psi1f(span, m)));
 		af::array cero2 = matmul(psi1f(span, m), af::conjg(psi_initial(span, m)));
 
@@ -237,11 +251,13 @@ beginning:
 	double dP = 2 * PI / (Zmax - Zmin);
 	double* p1 = new double[NumZ];
 	double* p2 = new double[NumZ];
-	for (int n = 0; n != NumZ; n++) {
+	for (int n = 0; n != NumZ; n++)
+	{
 		p1[n] = (n - NumZ / 2) * dP;
 	}
 	//FFTSHIFT (no fourier transform necessary)
-	for (int n = 0; n != NumZ / 2; n++) {
+	for (int n = 0; n != NumZ / 2; n++)
+	{
 		p2[n] = p1[NumZ / 2 + n];
 		p2[NumZ / 2 + n] = p1[n];
 	}
@@ -253,9 +269,13 @@ beginning:
 	dm = new double[bz * bz * NumZ];
 
 	std::cout << "cvmat" << endl;
-	for (int n = 0; n != NumZ; n++) {
-		for (int m = 0; m != bz; m++) {
-			for (int l = 0; l != bz; l++) { //(n,m,l)==(NumZ,bz,bz), m=row, l=column, of 16x16 matrices.
+	for (int n = 0; n != NumZ; n++)
+	{
+		for (int m = 0; m != bz; m++)
+		{
+			//(n,m,l)==(NumZ,bz,bz), m=row, l=column, of 16x16 matrices.
+			for (int l = 0; l != bz; l++)
+			{ 
 				dmat >> dm[m + l * bz + n * bz * bz];
 			}
 		}
@@ -269,8 +289,10 @@ beginning:
 
 	creal = new double[bz * NumZ];
 	cim = new double[bz * NumZ];
-	for (int n = 0; n != NumZ; n++) {
-		for (int m = 0; m != bz; m++) {
+	for (int n = 0; n != NumZ; n++)
+	{
+		for (int m = 0; m != bz; m++)
+		{
 			vmat >> creal[m + n * bz] >> cim[m + n * bz];
 		}
 		if (n % 512 == 0) { std::cout << n / dNumZ << '\t'; }
@@ -322,9 +344,10 @@ beginning:
 	//ofstream wf(fnp1);
 	start = clock();
 	af::array out = af::constant(0, 1, f64);
-	while (t < TimeMax) {
-
-		gfor(seq n, NumZ) {
+	while (t < TimeMax)
+	{
+		gfor(seq n, NumZ)
+		{
 			af::array cero = matmul(psi1f(span, n), af::conjg(psi1f(span, n)));
 			Norm1(n) = sum(cero(span, 0));
 			af::array cero2 = matmul(psi1f(span, n), af::conjg(psi_initial(span, n)));
@@ -334,23 +357,27 @@ beginning:
 		gNorm(time) = sum(real(Norm1(span)));
 		gp0(time) = sum(real(Norm2(span)));
 
-		if (time % 100 == 0) {
+		if (time % 100 == 0)
+		{
 			std::cout << t << '\t' << sum<double>(gNorm(time)) << '\t' << sum<double>(gp0(time)) << '\t';//Norm
 			std::cout << (clock() - start) / CLOCKS_PER_SEC << " sec" << endl;//Time
 		}
 
-		gfor(seq n, bz) {
+		gfor(seq n, bz)
+		{
 			af::array temp = matmul(fft(psiT(span, n)), mom(span, 0));
 			psiT(span, n) = ifft(temp(span, 0)) / dNumZ;//no longer scaled by NumZ
 		}
 
 		//calculating coulomb coupling with diagonalizing matrix conjugate transpose
 		psi1f = psiT.T();
-		gfor(seq n, NumZ) {
+		gfor(seq n, NumZ)
+		{
 			psi1f(span, n) = matmul(cd(span, span, n).H(), psi1f(span, n));
 		}
 		psi1f = matmul(cv0, psi1f);
-		gfor(seq n, NumZ) {
+		gfor(seq n, NumZ)
+		{
 			psi1f(span, n) = matmul(cd(span, span, n), psi1f(span, n));
 		}
 		psiT = psi1f.T();
@@ -360,12 +387,14 @@ beginning:
 
 		//laser interaction
 		las(span, 0) = af::complex(cos(v * z(span) * dT), -sin(v * z(span) * dT));
-		gfor(seq n, bz) {
+		gfor(seq n, bz)
+		{
 			psiT(span, n) = matmul(psiT(span, n), las(span, 0));
 		}
 
 		//transform to momentum space
-		gfor(seq n, bz) {
+		gfor(seq n, bz)
+		{
 			af::array temp = matmul(fft(psiT(span, n)), mom(span, 0));
 			psiT(span, n) = matmul(ifft(temp(span, 0)), Mask(span, 0)) / dNumZ;//no longer scaled by NumZ
 
@@ -374,19 +403,22 @@ beginning:
 
 		psi = matmul(psi2.T(), psi1f); //convert to Cartesian coord's
 
-		if (time < Tint) {
+		if (time < Tint)
+		{
 			if (time >= Halfway && time < (Halfway + Ttime)) {
 				dblm2(span) = psi(rou0 + 1, seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1)) - psi(rou0, seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1));
 				Jrou1(span) = matmul(psi(rou0, seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1)).T(), af::conjg(dblm2(span)));
 				Jrou2(span) = matmul(af::conjg(psi(rou0, seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1))).T(), dblm2(span)) * rou0 / 8 / sqrt(z(seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1)) * z(seq(NumZ / 2 - z0, NumZ / 2 + z0 - 1)) + rou0 * rou0 / 64);
-				gfor(af::array i, rou0) {
+				gfor(af::array i, rou0)
+				{
 					dblm(i) = psi(i, NumZ / 2 - z0 - 1) - psi(i, NumZ / 2 - z0);
 					Jz1(i) = matmul(psi(i, NumZ / 2 - z0), af::conjg(dblm(i)));
 					Jz2(i) = matmul(af::conjg(psi(i, NumZ / 2 - z0)), dblm(i)) * z0 / 8 / sqrt(rou(i) * rou(i) + z0 * z0 / 64);
 				}
 				Jrout(time - Halfway, span) = (Jrou1 - Jrou2) * af::conjg(imaginarynumber) * dR / 2.0;
 				Jzt(time - Halfway, span) = (Jz1 - Jz2) * af::conjg(imaginarynumber) * dZ / 2.0;
-				gfor(seq i, rou0) {
+				gfor(seq i, rou0)
+				{
 					dblm(i) = psi(i, NumZ / 2 + z0 + 1) - psi(i, NumZ / 2 - z0);
 					Jz1(i) = matmul(psi(i, NumZ / 2 + z0), af::conjg(dblm(i)));
 					Jz2(i) = matmul(af::conjg(psi(i, NumZ / 2 + z0)), dblm(i)) * z0 / 8 / sqrt(rou(i) * rou(i) + z0 * z0 / 64);
@@ -396,28 +428,35 @@ beginning:
 			else if (time > (Halfway + Ttime)) goto end;
 		}
 
-		gfor(af::array n, NumZ) {  //std. dipole
+		//std. dipole
+		gfor(af::array n, NumZ)
+		{
 			af::array d3 = matmul(af::conjg(psi1f(span, n)), psi1f(span, n));
 			af::array d4 = -2 * af::Pi * z(n) * dZ * d3;
 			dsum(n) = sum(real(d4(span, 0)));
 		}
 		d(0) = sum(dsum(span));
 
-		gfor(af::array n, NumZ) {//alt. dipole
+		//alt. dipole
+		gfor(af::array n, NumZ)
+		{
 			af::array d1 = matmul(af::conjg(psi_initial(span, n)), psi1f(span, n));
 			af::array d2 = -2 * af::Pi * z(n) * dZ * sqrt(matmul(af::conjg(d1(span, 0)), d1(span, 0)));
 			dsum(n) = sum(real(d2(span, 0)));
 		}
 		d0(0) = sum(dsum(span)); // dipole with initial wf
 
-		gfor(af::array n, NumZ) {//acc. dipole
+		//acc. dipole
+		gfor(af::array n, NumZ)
+		{
 			af::array d5 = matmul(zr3(span, n), af::conjg(psi(span, n)));
 			af::array d6 = matmul(d5(span, 0), psi(span, n));
 			dsum(n) = -2 * af::Pi * dZ * dR * z(n) * sum(real(d6(span, 0)));
 		}
 		//psi1f=matmul(psi2R,psi*dR); //convert back to Bessel coord's
 
-		if (time >= 4 && time <= Tint) {
+		if (time >= 4 && time <= Tint)
+		{
 			dp(time - 4) = d(0);
 			dp0(time - 4) = d0(0);
 			dA(time - 4) = sum(dsum(span));
@@ -433,21 +472,26 @@ end:
 
 	af::array JEz = af::constant(0, Ttime, f64);
 	af::array JEr = af::constant(0, Ttime, f64);
-	gfor(af::array n, z0 * 2) {
+	gfor(af::array n, z0 * 2)
+	{
 		Jrout(span, n) = fft(Jrout(span, n));
 	}
-	gfor(af::array n, Ttime) {
+	gfor(af::array n, Ttime)
+	{
 		JEr(n) = sum(real(matmul(Jrout(n, span), af::conjg(Jrout(n, span))))) * dZ;
 	}
-	gfor(af::array n, rou0) {
+	gfor(af::array n, rou0)
+	{
 		Jzt(span, n) = fft(Jzt(span, n));
 	}
-	gfor(af::array n, Ttime) {
+	gfor(af::array n, Ttime)
+	{
 		JEz(n) = sum(real(matmul(Jzt(n, span), af::conjg(Jzt(n, span))))) * dR;
 	}
 
 	ofstream psinorm(fn1);
-	for (int n = 0; n != Ttime; n++) {
+	for (int n = 0; n != Ttime; n++)
+	{
 		psinorm << sum<double>(gNorm(n)) << '\t' << sum<double>(gp0(n)) << '\t' << sum<double>(dp(n)) << '\t' << sum<double>(JEr(n)) << '\t' << sum<double>(JEz(n)) << '\t' << sum<double>(dp0(n)) << '\t' << "0" << '\t' << "0" << '\t' << sum<double>(dA(n)) << endl;
 	}
 	psinorm << endl << "Completed propagation\t" << (clock() - start) / CLOCKS_PER_SEC << endl;
